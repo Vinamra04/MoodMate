@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MoodMate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        /* Hero background style */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background-color: #000;
+            background-image: 
+                url('../img/noise.png'), 
+                radial-gradient(ellipse at top, #242937, transparent),
+                radial-gradient(ellipse at bottom, #171340, transparent);
+            background-size: 
+                200px, /* noise texture size */
+                100%,   /* top ellipse gradient */
+                200%;   /* bottom ellipse gradient */
+            background-attachment: fixed;
+            background-repeat: repeat, no-repeat, no-repeat;
+            background-blend-mode: normal;
+            color: white;
+        }
+        
+        /* Custom header style for dashboard */
+        .dashboard-header {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            width: calc(100% - 2rem);
+        }
+        
+        .dashboard-header a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .dashboard-header a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .logout {
+            padding: 8px 15px;
+            background-color: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 0;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-right: 1rem;
+            border: 2px solid white;
+            letter-spacing: 1px;
+            text-align: center;
+            position: relative;
+            transition: all .35s;
+            overflow: hidden;
+        }
+        
+        .logout span {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logout:after {
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: #F72585;
+            transition: all .35s;
+        }
+        
+        .logout:hover {
+            color: #fff;
+        }
+        
+        .logout:hover:after {
+            width: 100%;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 25px;
+            background-color: rgba(30, 35, 50, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            color: #fff;
+        }
+        
+        header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .welcome {
+            font-size: 1.7em;
+            color: #4CC9F0;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .card {
+            background-color: rgba(36, 41, 55, 0.8);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            color: #4CC9F0;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        
+        .card h3 {
+            color: #B5DCFD;
+        }
+        
+        .mood-selector {
+            margin-bottom: 20px;
+        }
+        
+        select, button {
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        
+        select {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(30, 35, 50, 0.9);
+            color: #fff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 0 0 rgba(76, 201, 240, 0.0);
+        }
+        
+        select:hover, select:focus {
+            border-color: #4CC9F0;
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        button {
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3a56d4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .history-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            padding: 8px 15px;
+            background-color: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            display: none; /* Initially hidden */
+            z-index: 40;
+        }
+        
+        .history-btn:after,
+        .history-btn:before {
+            backface-visibility: hidden;
+            border: 1px solid rgba(255, 255, 255, 0);
+            bottom: 0px;
+            content: " ";
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            transition: all 280ms ease-in-out;
+            width: 0;
+        }
+        
+        .history-btn:hover:after,
+        .history-btn:hover:before {
+            backface-visibility: hidden;
+            border-color: white;
+            transition: width 350ms ease-in-out;
+            width: 70%;
+        }
+        
+        .history-btn:hover:before {
+            bottom: auto;
+            top: 0;
+            width: 70%;
+        }
+        
+        #recommendations {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        #recommendations li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: rgba(26, 31, 45, 0.5);
+            border-radius: 4px;
+            border-left: 4px solid #4CC9F0;
+        }
+        
+        .moodbot-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            text-align: center;
+            background-color: #560BAD;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        
+        .moodbot-btn:hover {
+            background-color: #480990;
+        }
+        
+        .mood-history {
+            margin-top: 20px;
+        }
+        
+        .mood-history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            margin-bottom: 6px;
+            background-color: rgba(26, 31, 45, 0.5);
+            border-radius: 4px;
+        }
+        
+        .mood-name {
+            font-weight: bold;
+            color: #B5DCFD;
+            font-size: 0.95em;
+        }
+        
+        .mood-date {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <a href="/">MoodMate</a>
+        <a href="{{ url_for('logout') }}" class="logout"><span>Logout</span></a>
+    </div>
+    
+    <div class="hero">
+        <div class="container">
+            <header>
+                <div class="welcome">Welcome, {{ username }}</div>
+            </header>
+            
+            <button id="historyBtn" class="history-btn">View Mood History</button>
+            
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2 style="font-size: 1.8em; color: #4CC9F0; margin-bottom: 15px;">How are you feeling today?</h2>
+                    <form id="moodForm" class="mood-selector">
+                        <label for="mood" style="font-size: 1.1em; display: block; margin-bottom: 8px;">Select Your Mood:</label>
+                        <select id="mood" name="mood_id" style="width: 65%; padding: 10px; font-size: 1em; margin-right: 10px;">
+                            <option value="1">Happy</option>
+                            <option value="2">Sad</option>
+                            <option value="3">Anxious</option>
+                            <option value="4">Angry</option>
+                            <option value="5">Relaxed</option>
+                            <option value="6">Stressed</option>
+                            <option value="7">Motivated</option>
+                            <option value="8">Lonely</option>
+                            <option value="9">Excited</option>
+                            <option value="10">Bored</option>
+                        </select>
+                        <button type="submit" style="padding: 10px 16px; font-size: 1em;">Submit</button>
+                    </form>
+                    
+                    <h3 style="font-size: 1.2em; margin-top: 12px;">Recommendations:</h3>
+                    <ul id="left-recommendations"></ul>
+                    
+                    <a href="{{ url_for('moodbot') }}" class="moodbot-btn">
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                            <div style="font-size: 1.3em; margin-right: 10px;">🤖</div>
+                            <div>
+                                <div style="font-weight: bold;">Chat with MoodBot</div>
+                                <div style="font-size: 0.8em;">Get personalized advice based on your mood history</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="card" style="position: relative;">
+                    <div id="recommendationsPanel" style="display: none;">
+                        <h2 style="color: #F72585; font-size: 1.6em;">Personalized Recommendations</h2>
+                        <div id="mood-selected" style="font-size: 1.2em; margin: 12px 0; color: #4CC9F0;"></div>
+                        <ul id="recommendations" style="margin-top: 15px;"></ul>
+                    </div>
+                    
+                    <div id="historyPanel">
+                        <h2 style="font-size: 1.6em;">Your Mood History</h2>
+                        <div class="mood-history">
+                            {% if mood_history %}
+                                {% for entry in mood_history %}
+                                <div class="mood-history-item">
+                                    <div class="mood-name">{{ entry.mood_name }}</div>
+                                    <div class="mood-date">{{ entry.recorded_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No mood history available yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('moodForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get selected mood text
+            const moodSelect = document.getElementById('mood');
+            const selectedMoodText = moodSelect.options[moodSelect.selectedIndex].text;
+            
+            fetch('/submit_mood', {
+                method: 'POST',
+                body: new FormData(this)
+            }).then(response => response.json())
+              .then(data => {
+                  // Clear recommendation list
+                  document.getElementById('recommendations').innerHTML = '';
+                  
+                  // Show recommendations only in right panel
+                  data.forEach(rec => {
+                      const rightItem = document.createElement('li');
+                      rightItem.textContent = `${rec[1]}: ${rec[0]}`;
+                      document.getElementById('recommendations').appendChild(rightItem);
+                  });
+                  
+                  // Update the mood selected text
+                  document.getElementById('mood-selected').textContent = `Selected Mood: ${selectedMoodText}`;
+                  
+                  // Show recommendations panel, hide history panel
+                  document.getElementById('recommendationsPanel').style.display = 'block';
+                  document.getElementById('historyPanel').style.display = 'none';
+                  
+                  // Show the history button
+                  document.getElementById('historyBtn').style.display = 'block';
+              });
+        });
+        
+        // Toggle between history and recommendations
+        document.getElementById('historyBtn').addEventListener('click', function() {
+            const historyPanel = document.getElementById('historyPanel');
+            const recommendationsPanel = document.getElementById('recommendationsPanel');
+            
+            if (historyPanel.style.display === 'none') {
+                historyPanel.style.display = 'block';
+                recommendationsPanel.style.display = 'none';
+            } else {
+                historyPanel.style.display = 'none';
+                recommendationsPanel.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

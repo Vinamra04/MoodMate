@@ -1,0 +1,19 @@
+{
+  "name": "flask-tailwind-project",
+  "version": "1.0.0",
+  "description": "Flask project with Tailwind CSS",
+  "scripts": {
+    "build": "tailwindcss -i ./static/src/tailwind.css -o ./static/style.css",
+    "watch": "tailwindcss -i ./static/src/tailwind.css -o ./static/style.css --watch"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.3",
+    "flask-tailwind-project": "file:",
+    "mr": "file:"
+  }
+}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Results - MoodMate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            background-color: #000;
+            background-image: 
+                url('../img/noise.png'), 
+                radial-gradient(ellipse at top, #242937, transparent),
+                radial-gradient(ellipse at bottom, #171340, transparent);
+            background-size: 
+                200px, /* noise texture size */
+                100%,   /* top ellipse gradient */
+                200%;   /* bottom ellipse gradient */
+            background-attachment: fixed;
+            background-repeat: repeat, no-repeat, no-repeat;
+            background-blend-mode: normal;
+        }
+        
+        /* Custom header style for survey results */
+        .results-header {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 50;
+        }
+        
+        .results-header a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .results-header a:hover {
+            color: #4CC9F0;
+        }
+        
+        .results-container {
+            max-width: 800px;
+            margin: 30px auto 40px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #4CC9F0;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+
+        h2 {
+            color: #4CC9F0;
+            text-align: center;
+            margin: 30px 0;
+            font-size: 1.8rem;
+        }
+        
+        .mood-result {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background-color: rgba(30, 35, 50, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+        }
+        
+        .mood-name {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .mood-description {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .recommendation {
+            padding: 20px;
+            background-color: rgba(30, 35, 50, 0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .recommendation:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .rec-type {
+            font-weight: bold;
+            color: #4CC9F0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .rec-text {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .btn-dashboard {
+            position: relative;
+            display: block;
+            width: 200px;
+            margin: 40px auto;
+            padding: 12px;
+            background-color: transparent;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-weight: 100;
+            z-index: 1;
+            border: none;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .btn-dashboard svg {
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0; 
+            width: 100%;
+            z-index: -1;
+        }
+        
+        .btn-dashboard rect {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 1.5;
+            stroke-dasharray: 120, 300;
+            stroke-dashoffset: 0;
+            transition: all 0.8s ease-in-out;
+        }
+
+        .btn-dashboard:hover {
+            background: transparent;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #4CC9F0;
+        }
+        
+        .btn-dashboard:hover rect {
+            stroke: #4CC9F0;
+            stroke-width: 3;
+            stroke-dasharray: 20, 200;
+            stroke-dashoffset: 150;
+            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .moodbot-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: rgba(30, 35, 50, 0.5);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .moodbot-section p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+        
+        .btn-moodbot {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 12px 25px;
+            background-color: #560BAD;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .btn-moodbot:hover {
+            background-color: #480990;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="results-header">
+        <a href="/">MoodMate</a>
+    </div>
+    
+    <div class="results-container">
+        <h1>Your Survey Results</h1>
+        
+        <div class="mood-result">
+            <div class="mood-name">Your Current Mood: {{ mood.mood_name }}</div>
+            <div class="mood-description">{{ mood.description }}</div>
+        </div>
+        
+        <h2>What can you do?</h2>
+        <div class="recommendations">
+            {% for rec in recommendations %}
+            <div class="recommendation">
+                <div class="rec-type">{{ rec.rec_type }}</div>
+                <div class="rec-text">{{ rec.rec_text }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <a href="{{ url_for('dashboard') }}" class="btn-dashboard">
+            <svg>
+                <rect x="0" y="0" fill="none" width="100%" height="100%"></rect>
+            </svg>
+            Go to Dashboard
+        </a>
+        
+        <div class="moodbot-section">
+            <p>Want personalized advice based on your mood?</p>
+            <a href="{{ url_for('moodbot') }}" class="btn-moodbot">
+                <span style="font-size: 1.2em; margin-right: 5px;">🤖</span> Chat with MoodBot
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

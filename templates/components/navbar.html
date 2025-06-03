@@ -1,0 +1,111 @@
+<!-- Ultra Simple Transparent Navbar -->
+<div class="w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <div>
+                <a href="/" class="text-white font-bold text-2xl" style="text-decoration: none;">MoodMate</a>
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex md:items-center md:space-x-8">
+                <a href="#section1" class="text-white text-lg px-4 py-2 smooth-scroll nav-link-underline" style="text-decoration: none; position: relative;">About</a>
+                <a href="#section2" class="text-white text-lg px-4 py-2 smooth-scroll nav-link-underline" style="text-decoration: none; position: relative;">Team</a>
+                <a href="#contact" class="text-white text-lg px-4 py-2 smooth-scroll nav-link-underline" style="text-decoration: none; position: relative;">Contact Us</a>
+                
+                <!-- Blob Button Login -->
+                <a href="{{ url_for('login') }}" class="blob-btn blob-btn-white">
+                    Login
+                    <span class="blob-btn__inner">
+                        <span class="blob-btn__blobs">
+                            <span class="blob-btn__blob"></span>
+                            <span class="blob-btn__blob"></span>
+                            <span class="blob-btn__blob"></span>
+                            <span class="blob-btn__blob"></span>
+                        </span>
+                    </span>
+                </a>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white">
+                    <svg id="open-icon" class="block h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg id="close-icon" class="hidden h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile menu, show/hide based on menu state -->
+    <div id="mobile-menu" class="hidden md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <a href="#section1" class="block text-white text-lg px-3 py-2 smooth-scroll nav-link-underline" style="text-decoration: none; position: relative;">About</a>
+            <a href="#section2" class="block text-white text-lg px-3 py-2 smooth-scroll nav-link-underline" style="text-decoration: none; position: relative;">Team</a>
+            <a href="#contact" class="block text-white text-lg px-3 py-2 smooth-scroll nav-link-underline" style="text-decoration: none; position: relative;">Contact Us</a>
+            
+            <!-- Mobile Blob Button Login -->
+            <a href="{{ url_for('login') }}" class="blob-btn blob-btn-white block w-full">
+                Login
+                <span class="blob-btn__inner">
+                    <span class="blob-btn__blobs">
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                    </span>
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- SVG Filter for Blob Animation -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="goo-filter">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+      <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+    </filter>
+  </defs>
+</svg>
+
+<!-- Style for nav link underline animation -->
+<style>
+  .nav-link-underline::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    background-color: white;
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link-underline:hover::after {
+    width: 80%;
+  }
+</style>
+
+<!-- Script for navbar functionality (mobile menu only) -->
+<script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('open-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        openIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('hidden');
+    });
+</script> 

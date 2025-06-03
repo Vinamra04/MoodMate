@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MoodMate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Custom header style for login */
+        .login-header {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 50;
+        }
+        
+        .login-header a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .login-header a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background-color: #000;
+            background-image: 
+                url('../img/noise.png'), 
+                radial-gradient(ellipse at top, #242937, transparent),
+                radial-gradient(ellipse at bottom, #171340, transparent);
+            background-size: 
+                200px, /* noise texture size */
+                100%,   /* top ellipse gradient */
+                200%;   /* bottom ellipse gradient */
+            background-attachment: fixed;
+            background-repeat: repeat, no-repeat, no-repeat;
+            background-blend-mode: normal;
+            color: white;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+            height: 100vh;
+        }
+        
+        .login-container {
+            background-color: rgba(30, 35, 50, 0.8);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(8px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        input {
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        button {
+            padding: 12px;
+            background-color: #3a0ca3;
+            color: white;
+            border: 1px solid #480ca8;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        button:after {
+            background: #fff;
+            content: "";
+            height: 155px;
+            left: -75px;
+            opacity: 0.2;
+            position: absolute;
+            top: -50px;
+            transform: rotate(35deg);
+            transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+            width: 50px;
+            z-index: 1;
+        }
+        
+        button:hover:after {
+            left: 120%;
+            transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        button span {
+            position: relative;
+            z-index: 2;
+        }
+        
+        button:hover {
+            background-color: #4b10cc;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .signup-link a {
+            color: #4CC9F0;
+            text-decoration: none;
+        }
+        
+        .signup-link a:hover {
+            text-decoration: underline;
+            color: #72d7f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-header">
+        <a href="/">MoodMate</a>
+    </div>
+    
+    <div class="hero">
+        <div class="login-container">
+            <h1>Login</h1>
+            <form id="loginForm" method="POST" action="/login">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                
+                <button type="submit"><span>Login</span></button>
+            </form>
+            
+            <div class="signup-link">
+                Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

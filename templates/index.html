@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodMate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='codrops css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='codrops css/effect1/highlight-text.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='codrops css/effect2/highlight-text.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='codrops css/effect3/highlight-text.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='codrops css/effect9/highlight-text.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Required scripts for text animations -->
+    <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/split-type@0.3.3/umd/index.min.js"></script>
+    
+    <!-- Initialize GSAP plugins -->
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Override any navbar styling to ensure transparency */
+        #navbar {
+            background-color: transparent !important;
+            background: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background-color: #000;
+            background-image: 
+                url('../static/codrops css/img/noise.png'), 
+                radial-gradient(ellipse at top, #242937, transparent),
+                radial-gradient(ellipse at bottom, #171340, transparent);
+            background-size: 
+                200px, /* noise texture size */
+                100%,   /* top ellipse gradient */
+                200%;   /* bottom ellipse gradient */
+            background-attachment: fixed;
+            background-repeat: repeat, no-repeat, no-repeat;
+            background-blend-mode: normal;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: white;
+            color: #4CAF50;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        /* About section styles */
+        .about {
+            padding: 80px 0;
+            background-color: #000;
+            background-image: 
+                url('../img/noise.png'), 
+                radial-gradient(ellipse at top, #242937, transparent),
+                radial-gradient(ellipse at bottom, #171340, transparent);
+            background-size: 
+                200px, /* noise texture size */
+                100%,   /* top ellipse gradient */
+                200%;   /* bottom ellipse gradient */
+            background-attachment: fixed;
+            background-repeat: repeat, no-repeat, no-repeat;
+            background-blend-mode: normal;
+            color: var(--color-text, #b8afaa);
+        }
+        
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .about-section {
+            margin-bottom: 80px;
+            width: 80%;
+        }
+        
+        .about h2 {
+            font-family: "parabolica", "the-seasons", serif;
+            font-size: clamp(1rem, 4vw, 4.5rem);
+            margin-bottom: 30px;
+            color: #4CC9F0;
+            font-weight: 300;
+            line-height: 0.8;
+            text-transform: uppercase;
+        }
+        
+        .about h3 {
+            font-family: "parabolica", "the-seasons", serif;
+            font-size: clamp(0.875rem, 1.8vw, 2.3rem);
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: 300;
+            line-height: 0.8;
+            text-transform: uppercase;
+        }
+        
+        .about p {
+            font-family: "parabolica", serif;
+            font-size: clamp(1.125rem, 4.5vw, 2.25rem);
+            margin-bottom: 35px;
+            line-height: 1.2;
+            font-weight: 300;
+            letter-spacing: -0.0225em;
+            text-wrap: balance;
+            max-width: 900px;
+        }
+        
+        .about .content__inner p {
+            margin: 0;
+            max-width: 900px;
+            text-wrap: balance;
+        }
+        
+        .oh {
+            overflow: hidden;
+            position: relative;
+            padding: 30px 0;
+        }
+        
+        /* Highlight text customization */
+        :root {
+            --color-text: #b8afaa;
+            --color-bg: #000;
+            --color-link: #968a84;
+            --color-link-hover: #fff;
+            --page-padding: 1rem;
+            --color-highlight-start: #968a84;
+            --color-highlight-end: #968a84;
+            --color-highlight-end-alt: #968a84;
+        }
+        
+        .highlight {
+            background: none;
+            color: var(--color-highlight-start);
+            display: inline-block;
+            position: relative;
+            white-space: nowrap;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 50px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature {
+            flex: 1;
+            min-width: 300px;
+            margin: 20px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .feature h2 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #2196F3;
+        }
+        
+        /* Add styles for the new Effect 9 */
+        .hx-9 {
+            position: relative;
+            --select-width: 0%;
+            --select-width-final: 103%;
+            overflow: visible;
+            padding: 0 4px;
+            margin: 0 2px;
+            display: inline-block;
+            box-decoration-break: clone;
+            white-space: nowrap; /* Keep the entire phrase together */
+        }
+        
+        .hx-9 .word {
+            margin-right: 5px; /* Increased space between words */
+            display: inline-block; /* Ensure each word is a block */
+            position: relative; /* For proper positioning */
+        }
+        
+        .hx-9 .word:last-child {
+            margin-right: 0; /* No margin on last word */
+        }
+        
+        .hx__select {
+            position: absolute;
+            width: var(--select-width);
+            height: 100%;
+            left: -1%;
+            top: 0; /* Adjusted from 10% to 0 */
+            background: rgba(173, 216, 230, 0.14); /* Light blue background */
+            mix-blend-mode: plus-lighter;
+            pointer-events: none;
+            z-index: -1;
+            border-radius: 3px; /* Add rounded corners */
+        }
+        
+        .hx__select::before,
+        .hx__select::after {
+            content: '';
+            position: absolute;
+            top: -0.125em;
+            left: -0.075em;
+            width: 0.155em;
+            height: calc(100% + 0.1275em);
+            background-color: rgba(64, 158, 255, 0.5); /* Blue color for markers */
+            border-radius: 2px;
+        }
+        
+        .hx__select::after {
+            transform: scaleY(-1);
+            left: auto;
+            right: -0.075em;
+            top: auto;
+            bottom: -0.125em;
+        }
+        
+        .contact-link {
+            color: #87CEFA;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+            display: inline-block;
+            font-family: "parabolica", serif;
+            font-size: clamp(0.9rem, 2vw, 1.4rem);
+        }
+        
+        .contact-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        
+        .contact-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: #ffffff;
+            transition: width 0.3s ease;
+        }
+        
+        .contact-link:hover:after {
+            width: 100%;
+        }
+        
+        .social-icon {
+            width: 54px;
+            height: 54px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-radius: 50%;
+            background-color: rgb(24, 24, 36);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (min-width: 768px) {
+            .social-icon {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        
+        .social-icon-link {
+            color: white;
+            text-decoration: none;
+            margin: 0.75rem 1rem;
+        }
+        
+        .blob-bg {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background-color: #5D3FD3;
+            filter: url('#goo');
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 30%;
+            transform: rotate(0deg);
+        }
+        
+        /* Brand-specific colors */
+        .email-bg {
+            background-color: #ea4335;
+        }
+        
+        .instagram-bg {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+        }
+        
+        .facebook-bg {
+            background-color: #1877f2;
+        }
+        
+        .twitter-bg {
+            background-color: #000000;
+        }
+        
+        .github-bg {
+            background-color: #333;
+        }
+        
+        .social-icon:hover .blob-bg {
+            opacity: 1;
+            animation: rotate 10s infinite linear;
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .social-icon svg {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .social-icon svg {
+                width: 28px;
+                height: 28px;
+            }
+        }
+        
+        .social-icon:hover svg {
+            transform: scale(1.15);
+        }
+
+        .social-icons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .social-icon-link {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .team-member {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        @media (min-width: 768px) {
+            .team-member {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: flex-start;
+                padding-right: 220px; /* Make space for absolute positioned image */
+            }
+        }
+        
+        .team-info {
+            flex: 1;
+            max-width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .team-info {
+                max-width: calc(100% - 200px);
+                padding-right: 2rem;
+            }
+        }
+        
+        .team-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            .team-photo {
+                position: absolute;
+                right: 0;
+                top: 4rem; /* Moved down by 2rem */
+                width: 200px;
+                height: 200px;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .team-photo {
+                width: 220px;
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body class="js" style="background-color: #000; margin: 0; padding: 0;">
+    <div style="position: absolute; width: 100%; z-index: 10;">
+        {% include 'components/navbar.html' %}
+    </div>
+    
+    <div class="hero">
+        <h1>Mental Health Mood Tracker</h1>
+        <p>Track your mood, get personalized recommendations, and improve your mental well-being with our AI-powered platform.</p>
+        
+        <div class="cta-buttons">
+            {% if not session.logged_in %}
+            <a href="{{ url_for('login') }}" class="blob-btn">
+                Login
+                <span class="blob-btn__inner">
+                    <span class="blob-btn__blobs">
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                    </span>
+                </span>
+            </a>
+            <a href="{{ url_for('signup') }}" class="blob-btn">
+                Sign Up
+                <span class="blob-btn__inner">
+                    <span class="blob-btn__blobs">
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                    </span>
+                </span>
+            </a>
+            {% else %}
+            <a href="{{ url_for('dashboard') }}" class="blob-btn">
+                Go to Dashboard
+                <span class="blob-btn__inner">
+                    <span class="blob-btn__blobs">
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                        <span class="blob-btn__blob"></span>
+                    </span>
+                </span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <section class="about">
+        <div class="about-container">
+            <div class="about-section">
+                <div class="oh effect1" id="section1">
+                    <h2>What We Do</h2>
+                    <p>
+                        In a world that often overlooks emotional well-being, our <mark class="highlight hx hx-1">AI-powered Mental Health Mood Tracker</mark> provides users with a safe and personalized space to understand and nurture their mental health.
+                    </p>
+                    <p>
+                        When a new user signs up, they're guided through a short set of questions that help the AI understand their current emotional state. Based on this, the platform offers personalized suggestions and actionable recommendations to uplift their mood and promote a healthier mindset.
+                    </p>
+                    <p>
+                        But it doesn't stop there. Users can track their <mark class="highlight hx hx-1">moods over time</mark>, reflect on <mark class="highlight hx hx-1">emotional trends</mark>, and interact with a compassionate AI chatbot designed to offer supportive conversation and guidance—anytime, anywhere.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="about-section">
+                <div class="oh effect2" id="section2">
+                    <h2>The Team</h2>
+                    <div class="team-member">
+                        <div class="team-info">
+                            <h3>Aaditya Tiwary</h3>
+                            <p>
+                                A passionate developer with a keen eye for <mark class="highlight hx hx-2">backend systems</mark> and <mark class="highlight hx hx-2">AI integration.</mark> Aaditya handles the core logic, APIs, and <mark class="highlight hx hx-2">intelligent decision-making</mark> components of the platform.
+                            </p>
+                            <p>
+                                Backend Developer<br>
+                                <a href="mailto:aadityatiwary79@gmail.com" class="contact-link">aadityatiwary79@gmail.com</a> | 
+                                <a href="https://www.linkedin.com/in/aaditya-tiwary-9810952ab?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="contact-link">LinkedIn</a> | 
+                                <a href="https://github.com/AadityaTiwary1" target="_blank" class="contact-link">GitHub</a><br>
+                            </p>
+                        </div>
+                        <img src="{{ url_for('static', filename='codrops css/img/aditya.png') }}" alt="Aditya Tiwary" class="team-photo">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-section">
+                <div class="oh effect3" id="section3">
+                    <div class="team-member">
+                        <div class="team-info">
+                            <h3>Vinamra Srivastava</h3>
+                            <p>
+                                Focused on crafting <mark class="highlight hx hx-3">immersive front-end experiences</mark> and <mark class="highlight hx hx-3">seamless UI design</mark>, Vinamra ensures users interact with a <mark class="highlight hx hx-3">fluid and beautiful interface</mark> every time they visit.
+                            </p>
+                            <p>
+                                Frontend Developer<br>
+                                <a href="mailto:vinamra.srivastava18@gmail.com" class="contact-link">vinamra.srivastava18@gmail.com</a> | 
+                                <a href="https://www.linkedin.com/in/vinamrasrivastava?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="contact-link">LinkedIn</a> | 
+                                <a href="https://github.com/Vinamra04" target="_blank" class="contact-link">GitHub</a><br>
+                            </p>
+                        </div>
+                        <img src="{{ url_for('static', filename='codrops css/img/vinamra.jpg') }}" alt="Vinamra Srivastava" class="team-photo">
+                    </div>
+                </div>
+        </div>
+        
+            <div class="about-section">
+                <div class="oh effect9" id="section4">
+                    <h2>Who Is It For?</h2>
+                    <p>
+                        Our platform is designed for anyone navigating the <mark class="highlight hx hx-9">ups and downs<span class="hx__select"></span></mark> of life—from students coping with academic stress to working professionals managing the challenges of daily life. Whether you're looking to build <mark class="highlight hx hx-9">emotional awareness<span class="hx__select"></span></mark>, <mark class="highlight hx hx-9">manage anxiety<span class="hx__select"></span></mark>, or simply need a quiet space to reflect, this project is here to support and uplift you.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Animation Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Register GSAP plugins first
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Split text into words and characters for animation
+            const highlights = document.querySelectorAll('.highlight');
+            
+            highlights.forEach(highlight => {
+                new SplitType(highlight, { types: 'words, chars' });
+            });
+            
+            // Set defaults for all animations
+            gsap.defaults({
+                ease: 'power2.out',
+                duration: 0.4
+            });
+            
+            // Common ScrollTrigger configuration - using scrub for proportional animations
+            const commonScrollConfig = {
+                start: 'top 85%',
+                end: 'bottom 60%',
+                scrub: true,
+                markers: false
+            };
+            
+            // Create animations for each section
+            createEffect1Animation('#section1');
+            createEffect2Animation('#section2');
+            createEffect3Animation('#section3');
+            // Simplified Effect 9 - Direct implementation instead of class
+            createSimpleEffect9Animation('#section4');
+            
+            // Effect 1: Color fill animation
+            function createEffect1Animation(sectionId) {
+                const section = document.querySelector(sectionId);
+                const highlights = section.querySelectorAll('.hx-1');
+                
+                highlights.forEach((highlight, index) => {
+                    const chars = highlight.querySelectorAll('.char');
+                    
+                    // Initial state
+                    gsap.set(chars, { 
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    });
+                    
+                    // Create timeline for coordinated animation
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            ...commonScrollConfig,
+                            trigger: highlight
+                        }
+                    });
+                    
+                    // Add animation to timeline - staggered for each character
+                    tl.to(chars, {
+                        color: '#4CC9F0',
+                        stagger: {
+                            each: 0.01,
+                            from: "start"
+                        },
+                        duration: 0.5
+                    });
+                });
+            }
+            
+            // Effect 2: Background reveal animation - fixed for smoother appearance
+            function createEffect2Animation(sectionId) {
+                const section = document.querySelector(sectionId);
+                const highlights = section.querySelectorAll('.hx-2');
+                
+                highlights.forEach((highlight, index) => {
+                    // Ensure proper positioning
+                    highlight.style.position = 'relative';
+                    highlight.style.display = 'inline-block';
+                    highlight.style.overflow = 'hidden';
+                    highlight.style.padding = '0 4px';
+                    
+                    // Create a background element
+                    const bgElement = document.createElement('span');
+                    bgElement.classList.add('highlight-bg');
+                    highlight.insertBefore(bgElement, highlight.firstChild);
+                    
+                    // Position it behind the text
+                    gsap.set(bgElement, {
+                        position: 'absolute',
+                        left: '-101%',
+                        top: '0',
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                        transformOrigin: 'left center',
+                        zIndex: -1
+                    });
+                    
+                    // Set initial text color
+                    gsap.set(highlight, {
+                        color: 'var(--color-text)'
+                    });
+                    
+                    // Create timeline with scroll-based animation
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            ...commonScrollConfig,
+                            trigger: highlight,
+                            start: 'top 85%',
+                            end: 'bottom 60%'
+                        }
+                    });
+                    
+                    // Sequence animations - first slide background then change text color
+                    tl.to(bgElement, {
+                        left: '0%',
+                        duration: 0.6,
+                        ease: 'power1.inOut'
+                    })
+                    .to(highlight, {
+                        color: '#4361ee',
+                        duration: 0.3,
+                        ease: 'power1.out'
+                    }, '-=0.3'); // Start color change before background finishes
+                });
+            }
+            
+            // Effect 3: Pop-up animation
+            function createEffect3Animation(sectionId) {
+                const section = document.querySelector(sectionId);
+                const highlights = section.querySelectorAll('.hx-3');
+                
+                highlights.forEach((highlight, index) => {
+                    const chars = highlight.querySelectorAll('.char');
+                    
+                    // Initial state
+                    gsap.set(chars, {
+                        opacity: 0,
+                        y: '30%',
+                        scale: 0.8
+                    });
+                    
+                    // Create timeline
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            ...commonScrollConfig,
+                            trigger: highlight
+                        }
+                    });
+                    
+                    // Add to timeline - smooth transition for each character
+                    tl.to(chars, {
+                        y: '0%',
+                        opacity: 1,
+                        scale: 1,
+                        stagger: {
+                            each: 0.015,
+                            from: "start"
+                        },
+                        duration: 0.8,
+                        ease: 'back.out(1.2)',
+                        color: '#d686c1'
+                    });
+                });
+            }
+            
+            // Simplified Effect 9 implementation - guaranteed to work with scroll
+            function createSimpleEffect9Animation(sectionId) {
+                const section = document.querySelector(sectionId);
+                const highlights = section.querySelectorAll('.hx-9');
+                
+                highlights.forEach((highlight, index) => {
+                    // Force full width calculation by measuring actual text width
+                    const computeFullWidth = () => {
+                        const rect = highlight.getBoundingClientRect();
+                        return rect.width;
+                    };
+                    
+                    // Get the selection marker and characters
+                    const selectMarker = highlight.querySelector('.hx__select');
+                    const chars = highlight.querySelectorAll('.char');
+                    const words = highlight.querySelectorAll('.word');
+                    
+                    if (!chars.length) {
+                        console.warn('No characters found in highlight', highlight);
+                        return;
+                    }
+                    
+                    // Fix for incomplete highlighting - make full width
+                    highlight.style.width = 'auto';
+                    highlight.style.display = 'inline-block';
+                    highlight.style.whiteSpace = 'nowrap';
+                    
+                    // Important: Count words and measure widths
+                    const totalWidth = computeFullWidth();
+                    const wordCount = words.length;
+                    
+                    console.log(`Highlight ${index}: ${wordCount} words, width: ${totalWidth}px`);
+                    
+                    // Manual spacing fix for each highlight - force space between words
+                    words.forEach((word, i) => {
+                        word.style.display = 'inline-block';
+                        word.style.marginRight = '5px';
+                        word.style.position = 'relative';
+                        // No margin on last word
+                        if (i === words.length - 1) {
+                            word.style.marginRight = '0';
+                        }
+                    });
+                    
+                    // Ensure the highlight itself has proper styling for text visibility
+                    highlight.style.position = 'relative';
+                    highlight.style.alignItems = 'center';
+                    highlight.style.padding = '2px 4px';
+                    highlight.style.borderRadius = '3px';
+                    highlight.style.zIndex = '1';
+                    
+                    // Set the glow color based on index - all using light blue colors now
+                    let glowColor;
+                    switch(index) {
+                        case 0: glowColor = '#ADD8E6'; break; // Light blue for ups and downs
+                        case 1: glowColor = '#87CEFA'; break; // Light sky blue for emotional awareness
+                        case 2: glowColor = '#00BFFF'; break; // Deep sky blue for manage anxiety
+                        default: glowColor = '#ADD8E6'; break;
+                    }
+                    
+                    // Update selection marker color and position with blue colors
+                    if (selectMarker) {
+                        // Use light blue colors for all
+                        selectMarker.style.background = `rgba(173, 216, 230, 0.14)`;
+                        selectMarker.style.top = '0';
+                        selectMarker.style.left = '-1%';
+                        selectMarker.style.width = 'var(--select-width)';
+                        selectMarker.style.height = '100%';
+                        selectMarker.style.zIndex = '-1';
+                        
+                        // Critical fix: Make sure select element has position relative to parent
+                        selectMarker.style.position = 'absolute'; 
+                        
+                        // Ensure the before/after elements have blue colors
+                        const style = document.createElement('style');
+                        style.textContent = `
+                            .hx-9:nth-of-type(${index + 1}) .hx__select::before,
+                            .hx-9:nth-of-type(${index + 1}) .hx__select::after {
+                                background-color: rgba(64, 158, 255, 0.5);
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    
+                    // Create timeline for this highlight
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: highlight,
+                            start: 'top 80%',
+                            end: 'bottom 20%',
+                            scrub: 1,
+                            markers: false,
+                            id: `effect9-${index}`
+                        }
+                    });
+                    
+                    // Apply initial state to ALL words, not just the first one
+                    gsap.set(words, {
+                        color: 'var(--color-text)', // Reset to default text color
+                        filter: `drop-shadow(0px 0px 0px ${glowColor})`,
+                        display: 'inline-block',
+                        position: 'relative',
+                        zIndex: '2'
+                    });
+                    
+                    // Apply initial state to all characters as well
+                    gsap.set(chars, {
+                        color: 'var(--color-text)', // Reset to default text color
+                        filter: `drop-shadow(0px 0px 0px ${glowColor})`,
+                        display: 'inline-block',
+                        position: 'relative',
+                        zIndex: '2'
+                    });
+                    
+                    if (selectMarker) {
+                        gsap.set(selectMarker, {
+                            '--select-width': '0%'
+                        });
+                    }
+                    
+                    // First animate ALL words with color and glow
+                    tl.to(words, {
+                        color: glowColor, // Change text color to match glow
+                        filter: `drop-shadow(0px 0px 20px ${glowColor})`,
+                        stagger: 0.05, // Faster stagger for smoother effect
+                        duration: 0.4,
+                        ease: 'power2.out'
+                    });
+                    
+                    // Then animate the selection marker - ensure it goes to 103% for ALL highlights
+                    if (selectMarker) {
+                        // Force 103% width on all highlights
+                        tl.to(selectMarker, {
+                            '--select-width': '103%',
+                            duration: 0.6,
+                            ease: 'expo.out'
+                        }, '<0.1');
+                    }
+                    
+                    console.log(`Created animation for highlight ${index} with ${words.length} words, color: ${glowColor}`);
+                });
+            }
+            
+            // Create master timeline for section entrances
+            const sectionsTimeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.about-container',
+                    start: 'top 80%',
+                    end: 'top 30%',
+                    scrub: 0.5
+                }
+            });
+            
+            // Add sections to master timeline with slight delay between them
+            const sections = document.querySelectorAll('.about-section');
+            sections.forEach((section, index) => {
+                // Initial state
+                gsap.set(section, {
+                    y: 50,
+                    opacity: 0
+                });
+                
+                // Add to timeline
+                sectionsTimeline.to(section, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: 'power2.out'
+                }, index * 0.2); // Staggered timing
+            });
+        });
+    </script>
+
+    <!-- Scroll to top button -->
+    <div id="scroll-to-top" class="fixed bottom-6 right-6 z-50 opacity-0 invisible transition-all duration-300">
+        <button class="bg-blue-500 hover:bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:transform hover:scale-110 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Scroll to top script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollToTopBtn = document.getElementById('scroll-to-top');
+            
+            // Show/hide the button based on scroll position
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 100) { // Show after scrolling just 100px
+                    scrollToTopBtn.classList.remove('opacity-0', 'invisible');
+                    scrollToTopBtn.classList.add('opacity-100');
+                } else {
+                    scrollToTopBtn.classList.remove('opacity-100');
+                    scrollToTopBtn.classList.add('opacity-0', 'invisible');
+                }
+            });
+            
+            // Check scroll position immediately to show button if page is already scrolled
+            if (window.pageYOffset > 100) {
+                scrollToTopBtn.classList.remove('opacity-0', 'invisible');
+                scrollToTopBtn.classList.add('opacity-100');
+            }
+            
+            // Smooth scroll to top when the button is clicked
+            scrollToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+    <!-- SVG Filter for Blob Animation -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="goo-filter">
+      <defs>
+        <filter id="goo">
+          <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+          <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+        </filter>
+      </defs>
+    </svg>
+    
+    <!-- Smooth Scrolling Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all smooth scroll links
+            const smoothScrollLinks = document.querySelectorAll('.smooth-scroll');
+            
+            // Add click event listener to each link
+            smoothScrollLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get the target section id from the href attribute
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        // Get the mobile menu elements
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        const openIcon = document.getElementById('open-icon');
+                        const closeIcon = document.getElementById('close-icon');
+                        
+                        // Close mobile menu if it's open
+                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                            if (openIcon) openIcon.classList.remove('hidden');
+                            if (closeIcon) closeIcon.classList.add('hidden');
+                        }
+                        
+                        // Calculate the position to scroll to
+                        const offset = 80; // Reduced offset for better visibility
+                        const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                        
+                        // Scroll to the target section
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        console.log('Scrolling to section:', targetId, 'at position:', targetPosition);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Contact Section -->
+    <div id="contact" class="py-24 pt-32 bg-[#0f0f1a] relative">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col items-start">
+                <h2 class="text-6xl md:text-7xl font-bold text-white mb-12 tracking-wider -mt-5 relative pl-4 md:pl-8 whitespace-nowrap">
+                    <span class="relative z-10">CONTACT US</span>
+                    <span class="absolute w-3/4 h-1 bg-gradient-to-r from-purple-500 to-transparent bottom-0 left-0 transform -translate-y-2"></span>
+                </h2>
+                
+                <div class="social-icons-container flex justify-center items-center gap-8 mt-4 w-full">
+                    <!-- Gmail -->
+                    <a href="mailto:contact@mentalhealth.com" class="social-icon-link" aria-label="Email">
+                        <div class="social-icon relative">
+                            <div class="blob-bg email-bg"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-white">
+                                <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+                                <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+                            </svg>
+                        </div>
+                    </a>
+                    
+                    <!-- Instagram -->
+                    <a href="https://instagram.com" target="_blank" class="social-icon-link" aria-label="Instagram">
+                        <div class="social-icon relative">
+                            <div class="blob-bg instagram-bg"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-white">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </div>
+                    </a>
+                    
+                    <!-- Facebook -->
+                    <a href="https://facebook.com" target="_blank" class="social-icon-link" aria-label="Facebook">
+                        <div class="social-icon relative">
+                            <div class="blob-bg facebook-bg"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-white">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </div>
+                    </a>
+                    
+                    <!-- X (Twitter) -->
+                    <a href="https://twitter.com" target="_blank" class="social-icon-link" aria-label="X (Twitter)">
+                        <div class="social-icon relative">
+                            <div class="blob-bg twitter-bg"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-white">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </div>
+                    </a>
+                    
+                    <!-- GitHub -->
+                    <a href="https://github.com" target="_blank" class="social-icon-link" aria-label="GitHub">
+                        <div class="social-icon relative">
+                            <div class="blob-bg github-bg"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-white">
+                                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodBot - MoodMate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        :root {
+            --vh: 1vh;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            height: 100vh; /* Fallback */
+            height: calc(var(--vh, 1vh) * 100);
+            overflow: hidden;
+        }
+        
+        /* Hero background style */
+        .hero {
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px 5px; /* Reduced top padding from 50px to 40px and bottom from 10px to 5px */
+            background-color: #000;
+            background-image: 
+                url('../img/noise.png'), 
+                radial-gradient(ellipse at top, #242937, transparent),
+                radial-gradient(ellipse at bottom, #171340, transparent);
+            background-size: 
+                200px, /* noise texture size */
+                100%,   /* top ellipse gradient */
+                200%;   /* bottom ellipse gradient */
+            background-attachment: fixed;
+            background-repeat: repeat, no-repeat, no-repeat;
+            background-blend-mode: normal;
+            color: white;
+            overflow-y: auto; /* Allow vertical scrolling if needed */
+        }
+        
+        /* Custom header style for moodbot */
+        .moodbot-header {
+            position: fixed;
+            top: 0.5rem;
+            left: 0.75rem;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            width: calc(100% - 1.5rem);
+            font-size: 0.9em; /* Reduced overall text size */
+        }
+        
+        .moodbot-header a {
+            font-size: 1.3rem; /* Reduced from 1.5rem */
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .moodbot-header a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .back-button {
+            padding: 6px 12px; /* Reduced from 8px 15px */
+            background-color: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 0;
+            font-size: 0.8rem; /* Reduced from 0.9rem */
+            font-weight: bold;
+            margin-right: 1rem;
+            border: 1px solid white; /* Reduced from 2px */
+            letter-spacing: 1px;
+            text-align: center;
+            position: relative;
+            transition: all .35s;
+            overflow: hidden;
+        }
+        
+        .back-button span {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .back-button:after {
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: #4CC9F0;
+            transition: all .35s;
+        }
+        
+        .back-button:hover {
+            color: #fff;
+        }
+        
+        .back-button:hover:after {
+            width: 100%;
+        }
+        
+        .chat-container {
+            max-width: 950px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(30, 35, 50, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            max-height: calc(100vh - 50px); /* Increased space from 70px to 50px */
+            overflow: hidden;
+        }
+        
+        .chat-box {
+            flex-grow: 1;
+            background-color: rgba(36, 41, 55, 0.8);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-bottom: 15px;
+            overflow-y: auto;
+            max-height: 65vh; /* Increased from 60vh */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-height: 700px) {
+            .chat-container {
+                max-height: calc(100vh - 40px); /* Increased space from 50px to 40px */
+                padding: 12px;
+            }
+            
+            .welcome-message {
+                margin-bottom: 6px; /* Reduced from 8px */
+            }
+            
+            .welcome-message h2 {
+                margin-top: 2px; /* Reduced from 3px */
+                margin-bottom: 2px; /* Reduced from 3px */
+                font-size: 1.3em;
+            }
+            
+            .chat-box {
+                max-height: 80vh; /* Increased from 45vh */
+                padding: 12px;
+                margin-bottom: 30px; /* Reduced from 8px */
+            }
+            
+            .quick-replies {
+                margin-top: 5px; /* Reduced from 6px */
+                margin-bottom: 3px; /* Reduced from 4px */
+                max-height: 7vh; /* Reduced from 8vh */
+            }
+        }
+        
+        /* For very small screens */
+        @media (max-height: 500px) {
+            .chat-container {
+                max-height: calc(100vh - 30px); /* Increased space */
+                padding: 10px; /* Reduced from 12px */
+            }
+            
+            .welcome-message h2 {
+                font-size: 1.2em;
+                margin-top: 2px;
+                margin-bottom: 0px; /* Further reduced */
+            }
+            
+            .chat-box {
+                max-height: 42vh; /* Increased from 38vh */
+                padding: 8px;
+                margin-bottom: 5px; /* Reduced */
+            }
+            
+            .quick-replies {
+                max-height: 5vh; /* Reduced from 6vh */
+                margin-top: 3px; /* Further reduced */
+                margin-bottom: 2px; /* Further reduced */
+            }
+        }
+        
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px; /* Increased from 10px 15px */
+            border-radius: 18px;
+            max-width: 85%; /* Increased from 80% */
+            word-wrap: break-word;
+            font-size: 1.05em; /* Added for better readability */
+        }
+        
+        .user-message {
+            background-color: #4361ee;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background-color: rgba(26, 31, 45, 0.8);
+            color: #fff;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .message-input {
+            display: flex;
+            gap: 10px; /* Reduced from 12px */
+            position: relative;
+            margin-top: 3px; /* Reduced from 5px */
+            margin-bottom: 5px;
+        }
+        
+        .char-counter {
+            position: absolute;
+            bottom: -20px;
+            right: 0;
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .message-input input {
+            flex-grow: 1;
+            padding: 10px 15px; /* Reduced from 14px 16px */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(26, 31, 45, 0.5);
+            color: #fff;
+            border-radius: 25px;
+            font-size: 1em; /* Reduced from 1.05em */
+        }
+        
+        .message-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .message-input button {
+            padding: 10px 20px; /* Reduced from 12px 24px */
+            background-color: #560BAD;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1em; /* Reduced from 1.05em */
+            font-weight: bold;
+        }
+        
+        .message-input button:hover {
+            background-color: #480990;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 12px; /* Reduced from 15px */
+            color: #fff;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .welcome-message h2 {
+            color: #4CC9F0;
+            margin-top: 8px; /* Reduced from 10px */
+            margin-bottom: 5px; /* Reduced from 10px */
+            font-size: 1.5em; /* Slightly reduced from 1.6em */
+        }
+        
+        .welcome-message p {
+            margin-top: 3px;
+            margin-bottom: 3px;
+            font-size: 0.95em; /* Slightly reduced */
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .typing-indicator span {
+            height: 10px;
+            width: 10px;
+            float: left;
+            margin: 0 1px;
+            background-color: rgba(255, 255, 255, 0.5);
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        
+        .typing-indicator span:nth-of-type(1) {
+            animation: 1s blink infinite 0.3333s;
+        }
+        
+        .typing-indicator span:nth-of-type(2) {
+            animation: 1s blink infinite 0.6666s;
+        }
+        
+        .typing-indicator span:nth-of-type(3) {
+            animation: 1s blink infinite 0.9999s;
+        }
+        
+        @keyframes blink {
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px; /* Reduced from 10px */
+            margin-top: 10px; /* Reduced from 18px */
+            margin-bottom: 8px; /* Reduced from 12px */
+            max-height: 12vh; /* Reduced from 15vh */
+            overflow-y: auto;
+            justify-content: center;
+        }
+        
+        .quick-reply {
+            background-color: rgba(76, 201, 240, 0.2);
+            border: 1px solid rgba(76, 201, 240, 0.4);
+            border-radius: 15px;
+            padding: 6px 12px; /* Reduced from 8px 15px */
+            font-size: 0.9em; /* Reduced from 1em */
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quick-reply:hover {
+            background-color: rgba(76, 201, 240, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        #apiStatus {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.2);
+            display: none;
+            text-align: center;
+        }
+        
+        #checkApiButton {
+            background-color: rgba(76, 201, 240, 0.3);
+            color: white;
+            border: 1px solid rgba(76, 201, 240, 0.5);
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin-top: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        #checkApiButton:hover {
+            background-color: rgba(76, 201, 240, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="moodbot-header">
+        <a href="/">MoodMate</a>
+        <a href="{{ url_for('dashboard') }}" class="back-button"><span>Dashboard</span></a>
+    </div>
+    
+    <div class="hero">
+        <div class="chat-container">
+            <div class="welcome-message">
+                <h2>Welcome to MoodBot, {{ username }}!</h2>
+                <p>I'm here to help you with your mental well-being. I can provide personalized recommendations based on your mood history.</p>
+            </div>
+            
+            <div class="chat-box">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        Hi {{ username }}! I'm MoodBot, your personal mental health assistant. Based on your mood history, I can provide tailored recommendations to help improve your well-being. How are you feeling today?
+                    </div>
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <div class="message-input">
+                <input type="text" id="userInput" placeholder="Type your message here..." autocomplete="off" maxlength="200">
+                <div class="char-counter"><span id="charCount">0</span>/200</div>
+                <button id="sendButton">Send</button>
+            </div>
+            
+            <div class="quick-replies" id="quickReplies">
+                <div class="quick-reply" data-text="I'm feeling anxious today">I'm feeling anxious</div>
+                <div class="quick-reply" data-text="I'm feeling sad and down">I'm feeling sad</div>
+                <div class="quick-reply" data-text="I've been feeling happy lately">I'm feeling happy</div>
+                <div class="quick-reply" data-text="I'm stressed about work/school">I'm stressed</div>
+                <div class="quick-reply" data-text="What should I do to feel better?">How to feel better?</div>
+                <div class="quick-reply" data-text="Can you recommend activities for my mood?">Suggest activities</div>
+                <div class="quick-reply" data-text="I'm having trouble sleeping">Sleep issues</div>
+                <div class="quick-reply" data-text="How can I manage my anxiety?">Manage anxiety</div>
+            </div>
+            
+            <div id="apiStatus">
+                <div>Having trouble getting responses?</div>
+                <button id="checkApiButton">Check API Status</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const chatBox = document.querySelector('.chat-box');
+        const chatContainer = document.querySelector('.chat-container');
+        
+        // Adjust chat container size for better display
+        function adjustChatSize() {
+            // Get viewport height
+            const vh = window.innerHeight;
+            const headerHeight = 35; // Reduced from 45px
+            const maxHeight = vh - headerHeight - 15; // Reduced padding from 20px to 15px
+            
+            // Set max height for container
+            chatContainer.style.maxHeight = `${maxHeight}px`;
+            
+            // Adjust chat box height based on container size
+            const containerHeight = chatContainer.clientHeight;
+            const welcomeMessageHeight = document.querySelector('.welcome-message').clientHeight;
+            const messageInputHeight = document.querySelector('.message-input').clientHeight;
+            const quickRepliesHeight = document.querySelector('.quick-replies').clientHeight;
+            const apiStatusHeight = document.getElementById('apiStatus').clientHeight || 0;
+            
+            // Calculate available height for chat box with less padding
+            const availableHeight = containerHeight - welcomeMessageHeight - messageInputHeight - quickRepliesHeight - apiStatusHeight - 40; // Reduced padding from 45px to 40px
+            
+            // Set chat box height with higher priority - minimum 65% of available container height
+            const minChatHeight = Math.max(250, containerHeight * 0.65);
+            chatBox.style.height = `${Math.max(minChatHeight, availableHeight)}px`;
+            
+            // Ensure the quick replies section is compact
+            const quickReplies = document.querySelector('.quick-replies');
+            quickReplies.style.maxHeight = `${Math.min(60, vh * 0.08)}px`; // Further reduced from 65px to 60px and from 10% to 8% of viewport
+        }
+        
+        // Call on load and resize
+        window.addEventListener('load', adjustChatSize);
+        window.addEventListener('resize', adjustChatSize);
+        
+        // Function to add a message to the chat
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+            
+            // Format links in bot messages
+            if (!isUser) {
+                // Replace URLs with clickable links
+                message = message.replace(
+                    /(https?:\/\/[^\s]+)/g, 
+                    '<a href="$1" target="_blank" style="color: #4CC9F0; text-decoration: underline;">$1</a>'
+                );
+                
+                // Format numbered lists
+                message = message.replace(
+                    /(\d+\.\s)(.*?)(?=(\n\d+\.|\n\n|$))/gs,
+                    '<div style="margin-bottom: 5px; display: flex;"><span style="margin-right: 5px;">$1</span><span>$2</span></div>'
+                );
+                
+                // Format bullet points
+                message = message.replace(
+                    /(\*\s|\-\s)(.*?)(?=(\n\*|\n\-|\n\n|$))/gs,
+                    '<div style="margin-bottom: 5px; display: flex;"><span style="margin-right: 5px;">•</span><span>$2</span></div>'
+                );
+                
+                // Convert line breaks to HTML
+                message = message.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+            }
+            
+            messageDiv.innerHTML = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Function to show typing indicator
+        function showTypingIndicator() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Function to hide typing indicator
+        function hideTypingIndicator() {
+            typingIndicator.style.display = 'none';
+        }
+        
+        // Function to send message to the server
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message to chat
+            addMessage(message, true);
+            userInput.value = '';
+            document.getElementById('charCount').textContent = '0';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Send message to server
+                const response = await fetch('/api/moodbot_chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`API Error (${response.status}): ${errorText}`);
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Add a slight delay to make the typing indicator more realistic
+                setTimeout(() => {
+                    // Hide typing indicator
+                    hideTypingIndicator();
+                    
+                    // Add bot response to chat
+                    if (data.response) {
+                        // If this is a fallback response, show a subtle indicator
+                        if (data.fallback) {
+                            console.log("Using fallback response due to API issue:", data.error);
+                            const responseWithNote = data.response + 
+                                "\n\n<em style='opacity: 0.7; font-size: 0.8em;'>" + 
+                                "Note: I'm currently using limited responses as my AI service is experiencing issues." + 
+                                "</em>";
+                            addMessage(responseWithNote, false);
+                        } else {
+                            addMessage(data.response, false);
+                        }
+                    } else {
+                        addMessage("I'm sorry, I couldn't process your request. Please try again.", false);
+                    }
+                }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                
+                // Try to run a test to see if the API is working
+                testGeminiAPI()
+                    .then(isWorking => {
+                        setTimeout(() => {
+                            hideTypingIndicator();
+                            if (isWorking) {
+                                addMessage('I had some trouble processing your last message. Could you try rephrasing it?', false);
+                            } else {
+                                addMessage('Sorry, I seem to be having connection issues right now. Please try again later or contact support if the problem persists.', false);
+                                document.getElementById('apiStatus').style.display = 'block';
+                            }
+                        }, 500);
+                    });
+            }
+        }
+        
+        // Function to test if the Gemini API is working
+        async function testGeminiAPI() {
+            try {
+                const testResponse = await fetch('/api/test_gemini');
+                const testData = await testResponse.json();
+                return testData.status === 'success';
+            } catch (error) {
+                console.error('Error testing API:', error);
+                return false;
+            }
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Focus input field when page loads
+        window.addEventListener('load', function() {
+            userInput.focus();
+            
+            // Fix for mobile viewport height issues
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        });
+        
+        // Update custom viewport height variable on resize
+        window.addEventListener('resize', function() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        });
+        
+        // Character counter
+        userInput.addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('charCount').textContent = count;
+            sendButton.disabled = this.value.trim() === '';
+        });
+        
+        // Quick replies
+        document.getElementById('quickReplies').addEventListener('click', function(e) {
+            if (e.target.classList.contains('quick-reply')) {
+                const text = e.target.getAttribute('data-text');
+                userInput.value = text;
+                document.getElementById('charCount').textContent = text.length;
+                sendButton.disabled = false;
+                userInput.focus();
+            }
+        });
+        
+        // API status check
+        document.getElementById('checkApiButton').addEventListener('click', async function() {
+            this.textContent = 'Checking...';
+            const statusDiv = document.getElementById('apiStatus');
+            
+            const isWorking = await testGeminiAPI();
+            
+            if (isWorking) {
+                statusDiv.innerHTML = '<div style="color: #4CC9F0">✓ API is working now! Try sending a message.</div>';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                    statusDiv.innerHTML = '<div>Having trouble getting responses?</div><button id="checkApiButton">Check API Status</button>';
+                    document.getElementById('checkApiButton').addEventListener('click', this);
+                }, 3000);
+            } else {
+                statusDiv.innerHTML = '<div style="color: #F72585">✗ API still having issues. Please try again later.</div>';
+                setTimeout(() => {
+                    statusDiv.innerHTML = '<div>Having trouble getting responses?</div><button id="checkApiButton">Check API Status</button>';
+                    document.getElementById('checkApiButton').addEventListener('click', this);
+                }, 3000);
+            }
+        });
+        
+        // Initialize the disabled state
+        sendButton.disabled = true;
+    </script>
+</body>
+</html> 

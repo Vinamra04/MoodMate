@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - MoodMate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #000;
+            background-image: 
+                url('../img/noise.png'), 
+                radial-gradient(ellipse at top, #242937, transparent),
+                radial-gradient(ellipse at bottom, #171340, transparent);
+            background-size: 
+                200px, /* noise texture size */
+                100%,   /* top ellipse gradient */
+                200%;   /* bottom ellipse gradient */
+            background-attachment: fixed;
+            background-repeat: repeat, no-repeat, no-repeat;
+            background-blend-mode: normal;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Custom header style for welcome */
+        .welcome-header {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 50;
+        }
+        
+        .welcome-header a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .welcome-header a:hover {
+            color: #4CC9F0;
+        }
+        
+        /* Animation classes */
+        @keyframes blurReveal {
+            0% {
+                opacity: 0;
+                filter: blur(10px);
+                transform: translateX(-20px);
+            }
+            100% {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateX(0);
+            }
+        }
+        
+        .word-blur {
+            display: inline-block;
+            opacity: 0;
+            filter: blur(10px);
+            transform: translateX(-20px);
+        }
+        
+        .heading-word-container, 
+        .paragraph-container {
+            overflow: hidden;
+            display: block;
+            width: 100%;
+        }
+        
+        /* Welcome screen styles */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            max-width: 800px;
+            padding: 50px 30px;
+        }
+        
+        .welcome-screen h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: #4CC9F0;
+        }
+        
+        .welcome-screen p {
+            font-size: 1.4rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            color: white;
+            max-width: 800px;
+        }
+        
+        /* Button animation styles */
+        .link_wrapper {
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .start-survey-btn {
+            display: block;
+            width: 250px;
+            height: 50px;
+            line-height: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            background: #333;
+            text-align: center;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 3px solid #333;
+            transition: all .35s;
+            cursor: pointer;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+        
+        .icon {
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            position: absolute;
+            transform: rotate(45deg);
+            right: 0;
+            top: 0;
+            z-index: -1;
+            transition: all .35s;
+        }
+        
+        .icon svg {
+            width: 30px;
+            position: absolute;
+            top: calc(50% - 15px);
+            left: calc(50% - 15px);
+            transform: rotate(-45deg);
+            fill: #4361ee;
+            transition: all .35s;
+        }
+        
+        .start-survey-btn:hover {
+            width: 200px;
+            border: 3px solid #4361ee;
+            background: transparent;
+            color: #4361ee;
+        }
+        
+        .start-survey-btn:hover + .icon {
+            border: 3px solid #4361ee;
+            right: -25%;
+        }
+        
+        @media (max-width: 768px) {
+            .welcome-screen {
+                max-width: 90%;
+                padding: 20px;
+            }
+            
+            .welcome-screen h1 {
+                font-size: 2.2rem;
+            }
+            
+            .welcome-screen p {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-header">
+        <a href="/">MoodMate</a>
+    </div>
+    
+    <div class="welcome-screen">
+        <h1 class="heading-word-container">
+            <span class="word-blur">Welcome</span>
+            <span class="word-blur">aboard!</span>
+        </h1>
+        <p class="paragraph-container">
+            <span class="word-blur">Before</span>
+            <span class="word-blur">we</span>
+            <span class="word-blur">dive</span>
+            <span class="word-blur">in,</span>
+            <span class="word-blur">let's</span>
+            <span class="word-blur">take</span>
+            <span class="word-blur">a</span>
+            <span class="word-blur">moment</span>
+            <span class="word-blur">to</span>
+            <span class="word-blur">check</span>
+            <span class="word-blur">in</span>
+            <span class="word-blur">with</span>
+            <span class="word-blur">you.</span>
+        </p>
+        <p class="paragraph-container">
+            <span class="word-blur">Answer</span>
+            <span class="word-blur">a</span>
+            <span class="word-blur">few</span>
+            <span class="word-blur">quick</span>
+            <span class="word-blur">questions</span>
+            <span class="word-blur">so</span>
+            <span class="word-blur">our</span>
+            <span class="word-blur">MoodBot</span>
+            <span class="word-blur">can</span>
+            <span class="word-blur">better</span>
+            <span class="word-blur">understand</span>
+            <span class="word-blur">how</span>
+            <span class="word-blur">you're</span>
+            <span class="word-blur">feeling</span>
+            <span class="word-blur">today</span>
+            <span class="word-blur">—</span>
+            <span class="word-blur">and</span>
+            <span class="word-blur">guide</span>
+            <span class="word-blur">you</span>
+            <span class="word-blur">with</span>
+            <span class="word-blur">care,</span>
+            <span class="word-blur">insight,</span>
+            <span class="word-blur">and</span>
+            <span class="word-blur">empathy.</span>
+        </p>
+        
+        <div class="link_wrapper" id="survey-btn-wrapper">
+            <a href="/survey" class="start-survey-btn">Take the Survey</a>
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.832 268.832">
+                    <path d="M265.17 125.577l-80-80c-4.88-4.88-12.796-4.88-17.677 0-4.882 4.882-4.882 12.796 0 17.678l58.66 58.66H12.5c-6.903 0-12.5 5.598-12.5 12.5 0 6.903 5.597 12.5 12.5 12.5h213.654l-58.66 58.662c-4.88 4.882-4.88 12.796 0 17.678 2.44 2.44 5.64 3.66 8.84 3.66s6.398-1.22 8.84-3.66l79.997-80c4.883-4.882 4.883-12.796 0-17.678z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add word-by-word blur reveal animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const words = document.querySelectorAll('.word-blur');
+            const surveyBtnWrapper = document.getElementById('survey-btn-wrapper');
+            
+            // Animate each word with a small delay between them
+            words.forEach((word, index) => {
+                // Calculate a base delay (slower animation - approximately doubled)
+                const timePerWord = Math.max(50, 120 - words.length);
+                const delay = index * timePerWord;
+                
+                // Set animation properties with longer duration
+                setTimeout(() => {
+                    word.style.animation = `blurReveal 0.8s forwards ease-out`;
+                    word.style.opacity = '1';
+                }, delay);
+            });
+            
+            // Animate the button after all words
+            const totalWordsTime = words.length * Math.max(50, 120 - words.length);
+            setTimeout(() => {
+                // Fade in the button wrapper
+                surveyBtnWrapper.style.opacity = '0';
+                
+                setTimeout(() => {
+                    surveyBtnWrapper.style.opacity = '1';
+                    surveyBtnWrapper.style.transition = 'opacity 0.8s ease-out';
+                }, 50);
+            }, totalWordsTime + 200);
+        });
+    </script>
+</body>
+</html> 
