@@ -1,7 +1,5 @@
 # MoodMate: AI-powered Mental Health Mood Tracker
 
-![MoodMate Banner](static/img/banner.png)
-
 ## Overview
 MoodMate is a modern web platform designed to help users understand, track, and improve their mental health. Leveraging AI, MoodMate provides personalized mood tracking, actionable recommendations, and supportive conversations through a chatbot. The platform offers a safe, private, and user-friendly environment for emotional well-being.
 
@@ -15,6 +13,19 @@ MoodMate is a modern web platform designed to help users understand, track, and 
 - **AI Chatbot (MoodBot)**: Chat with an empathetic AI for support and advice, powered by Google Gemini.
 - **Dashboard**: Central hub for mood history, recommendations, and quick actions.
 - **Responsive UI**: Modern, mobile-friendly design with smooth animations.
+
+
+
+
+## Screenshots
+<!-- Add screenshots/gifs of your app here -->
+---
+![1](https://github.com/user-attachments/assets/d3d67a07-050d-4622-9d0e-8d56a2c875d8)
+![3](https://github.com/user-attachments/assets/3584324d-7cc0-48fe-abfd-242e891a3552)
+![Screenshot 2025-06-03 172250](https://github.com/user-attachments/assets/a598fa4b-5e04-40b7-860d-b681cc6d71be)
+![Screenshot 2025-06-03 172309](https://github.com/user-attachments/assets/409c1b93-f187-4d48-8eb8-2a6d6bf6e570)
+![Screenshot 2025-06-03 172336](https://github.com/user-attachments/assets/534f934d-89a2-48bb-ba33-0860aa51aa2f)
+![Screenshot 2025-06-03 172400](https://github.com/user-attachments/assets/0460b7ae-f3e9-4181-9c6a-c422e04a18a1)
 
 ---
 
@@ -45,8 +56,8 @@ MoodMate is a modern web platform designed to help users understand, track, and 
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/moodmate.git
-cd moodmate
+git clone https://github.com/Vinamra04/MoodMate.git
+cd MoodMate
 ```
 
 ### 2. Install Dependencies
@@ -107,19 +118,9 @@ The following variables must be set in your `.env` file:
 
 ---
 
-## Screenshots
-<!-- Add screenshots/gifs of your app here -->
-
----
-
 ## Credits
-- **Aaditya Tiwary** – Backend, AI integration, core logic ([GitHub](https://github.com/AadityaTiwary1))
-- **Vinamra Srivastava** – Frontend, UI/UX, immersive user experience ([GitHub](https://github.com/Vinamra04))
-
----
-
-## License
-This project is licensed under the MIT License.
+- **Aaditya Tiwary** – Backend, core logic ([GitHub](https://github.com/AadityaTiwary1))
+- **Vinamra Srivastava** – Frontend, UI/UX, AI integration, immersive user experience ([GitHub](https://github.com/Vinamra04))
 
 ---
 
