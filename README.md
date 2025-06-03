@@ -48,8 +48,8 @@ MoodMate is a modern web platform designed to help users understand, track, and 
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/moodmate.git
-cd moodmate
+[git clone https://github.com/yourusername/moodmate.git](https://github.com/Vinamra04/MoodMate.git)
+cd MoodMate
 ```
 
 ### 2. Install Dependencies
