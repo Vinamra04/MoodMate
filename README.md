@@ -1,7 +1,5 @@
 # MoodMate: AI-powered Mental Health Mood Tracker
 
-![MoodMate Banner](static/img/banner.png)
-
 ## Overview
 MoodMate is a modern web platform designed to help users understand, track, and improve their mental health. Leveraging AI, MoodMate provides personalized mood tracking, actionable recommendations, and supportive conversations through a chatbot. The platform offers a safe, private, and user-friendly environment for emotional well-being.
 
@@ -15,6 +13,11 @@ MoodMate is a modern web platform designed to help users understand, track, and 
 - **AI Chatbot (MoodBot)**: Chat with an empathetic AI for support and advice, powered by Google Gemini.
 - **Dashboard**: Central hub for mood history, recommendations, and quick actions.
 - **Responsive UI**: Modern, mobile-friendly design with smooth animations.
+
+---
+
+## Screenshots
+<!-- Add screenshots/gifs of your app here -->
 
 ---
 
@@ -107,19 +110,9 @@ The following variables must be set in your `.env` file:
 
 ---
 
-## Screenshots
-<!-- Add screenshots/gifs of your app here -->
-
----
-
 ## Credits
-- **Aaditya Tiwary** – Backend, AI integration, core logic ([GitHub](https://github.com/AadityaTiwary1))
-- **Vinamra Srivastava** – Frontend, UI/UX, immersive user experience ([GitHub](https://github.com/Vinamra04))
-
----
-
-## License
-This project is licensed under the MIT License.
+- **Aaditya Tiwary** – Backend, core logic ([GitHub](https://github.com/AadityaTiwary1))
+- **Vinamra Srivastava** – Frontend, UI/UX, AI integration, immersive user experience ([GitHub](https://github.com/Vinamra04))
 
 ---
 
